@@ -1,0 +1,405 @@
+SDLC :3 examples each
+
+
+1.Planning - Jira,Trello,MS project
+2.Defining - Confluence, Clickup ,Track and rally
+3.Designing - Lucidchart , Draw.io , Sketch
+4.Building - Jfrog, GitHub ,Git , Jenkins
+5.Testing - Junit , Postman,Sonar cube
+6.Deployment - Docker , Kubernetes , Ansible
+7.Maintenance - Nagios , Prometheus , Dynatrance
+
+
+Data - 
+Metadata -
+
+GitHub has only 100mb of space to store code .- cloud
+JFrog has security , scanning , and more features. - 
+								Jfrog
+
+•JFrog is considered the "Database of DevOps" and is used by millions of developers and the majority of Fortune 100 companies.
+•JFrog is a software supply chain platform that helps organizations manage and release software updates.
+•The JFrog Platform gives you an end-to-end pipeline to control the flow of your binaries from build to production.
+*It uses java language.
+ 
+
+Why?
+	Managing s/w packages from development to production .
+1.Development - 
+2.Build and compilation
+3.Testing - 
+4.Staging -
+5.Production - 
+
+	JFrog products :
+
+1.JFrog Artifactory - Universal Binary Repository manager. It is a universal DevOps solution providing end-to-end automation and management 
+   of binaries and artifacts through the application delivery process that improves productivity across your development ecosystem.
+	*Artifactory provides full metadata for all major package formats for both artifacts and folders.
+	*It enables freedom of choice supporting 25+ software build packages, all major CI/CD platforms, and DevOps tools you already use.
+*Artifactory offers a universal solution supporting all major package formats including Alpine, Maven, Gradle, Docker, Cargo, Conda, Conan, Debian, Go, Helm, Vagrant, YUM, P2, Ivy, NuGet, PHP, NPM, RubyGems, PyPI, Bower, CocoaPods, GitLFS, Opkg, SBT, Swift, Terraform.
+
+2.JFrog X-ray - To check vulnerabilities.
+	JFrog Xray is a security and compliance tool used to scan software components for vulnerabilities, license compliance issues, and security risks.
+
+3.JFrog Mission control - (Optimize Release Processes)
+  It is a single access point and dashboard, for managing all JFrog services under your administrative control, whether they are installed on your own site or at geographically remote sites.
+4.JFrog Pipelines - (Pipelines as Code)
+It is a next-generation Cl/CD automation and orchestration tool that embraces and enhances your pipeline processes by providing a 
+centralized command and control mechanism across all your DevOps pipelines.
+5.JFrog Bintray(Distribution):(Deliver Global Updates)
+Efficiently distributes immutable release bundles and automates the delivery of your software updates.
+
+		Subscription
+Cloud platform with Pro, Enterprise x or Enterprise+ license.
+Self - hosted : Pro , ProX , EnterpriseX , Enterprise+ license,
+
+Note : X-ray : ProX SS it is available.
+
+System requirements :
+
+Environment - JDK 17.0 , JRE
+8CPU , 16gb memory , 300gb fast disk
+External network port : 8081 - Artifactory , 8082 - X-ray
+X-ray : Only supports ubuntu server 22.04
+Processor : 64bit
+Database or third party appliance : Postgre SQL
+
+
+Commands :
+
+www.jfrog.com - to buy license
+Admin - General mgmt. - Activate x ray trail 
+After adding license key do database sync
+Console.log - To check the error in the product.
+
+sudo tail -f console.log
+
+
+Path to find system.yaml : 
+
+/opt/jfrog/artifactory/var$ cd etc
+/opt/jfrog/artifactory/var/etc$ ls
+
+access       event          installerState.yaml  logrotate  observability  router    system.basic-template.yaml  system.yaml
+artifactory  filebeat.yaml  jfconnect            metadata   replicator     security  system.full-template.yaml   system.yaml.202410210658
+
+
+
+26-10-2024 
+
+		Projects 
+
+#JFrog projects are management entity that hosts all your resources related to specific project such as repositories , builds , release bundles and pipelines.
+#JFrog Projects help administrators and DevOps to assign, manage, access, control, and share Project resources.
+
+From Artifactory 7.31.10, the JFrog Projects feature is now supported on all JFrog Subscriptions but varies on the number of projects, according to the following subscription types:
+*Pro/X subscription: Up to 3 projects (No option to extend this subscription).
+*Enterprise subscription: Up to 30 projects (No option to extend this subscription)
+*Enterprise+ subscription: Up to a total of 300 unique projects for each subscription with the option to increase the number of projects by purchasing an additional License Bucket. Each bucket supports an additional 100 projects.
+
+			(**)Repositories
+
+It is a central system for storing and managing collection of files or artifacts(binary code representation).
+These are the building blocks of softwares , here we can store the binaries and repositories.
+
+Types :
+1.Local repo - These are physical , locally managed repositories into which you can deploy artifacts .(or)
+		It contains artifacts that you upload locally.
+		Using local repositories, Artifactory gives you a central location to store your internal binaries. Through repository replication, you can even share binaries with teams that are located in remote locations.
+	
+	Nuget - stores .nupkg files.
+
+	
+2.Remote repo -  It serves as a caching proxy for a repository manage at a remote url(which may itself be another artifactory remote repo)
+		#Artifacts from cloud.
+
+3.Virtual repo - Combination of both local and remote repositories .
+		#A virtual repository or repository group aggregates several repositories with the same package type under a common url.
+
+4.Federated repo - A federation is a collection of repositories of federated type in different JPD's that are automatically configure for full  bidirectional mirroring.
+ 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+Permissions in user management : 1.Read - view all files within configure target or download artifacts and read the metadata .
+				 2.Annotate - artifacts and folders with metadata and properties.
+				3. Deploy/cache - download from remote and upload to locally or deploy artifacts and deploys to remote repository caches. 
+				4.Delete/Overwrite - Delete, move ,override files . 
+				5.Manage xray metadata :Trigger Xray scans on artifacts in repositories. Users can create and delete custom issues and licenses.
+				6.manage: manage settings for configured targets/repo admin, Manage
+
+
+support zone
+General management
+Platform monitoring
+
+3 packages - project  npm ,docker , maven
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+			JFrog X-ray service
+
+X-ray service contains the following microservices.
+1.Indexer - Indexer for caching and scanning data and all components(Downloads new components ,creates graph , indexes and upgrade graph)
+2.Persist - Persist for causing the components that can check for scanning.
+3.Analysis - Responsible for enriching component metadata such as vulnerabilities , licenses and versions.
+4.Server - This server responsibilities include generating violations by matching analysis data with watches and policies.
+5.Router - (to connect an x-ray and microservices.)Responsible for communication between microservices and cross products.
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+			X-ray policies
+
+Policies defines security and license compliance behaviour specifications.
+
+Types:
+
+1.Security management - 
+2.License compliance - 
+3.Operational risk management
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!				
+				X-ray watches
+
+It is used to manage policies.
+*X-ray watches are the focal point for viewing and managing your security and license violations in jFrog platform.
+*Watches help in monitoring repositories for security vulnerabilities and license compliance.
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
+pre requirements
+ 
+Xray requires a PostgreSQL database
+
+Xray installation requires jq. Install jq before you start Xray installation.
+
+External RabbitMQ instances are not officially supported;
+
+
+security ids
+CVE - common vulnerability and exposure ID
+CVSS - common vulnerability scoring system
+
+
+sudo etc/docker
+cat >>daemon.json 
+"insecure-registries":["135.233.99.177:8082:]
+vi daemon.json
+system.ctl restart docker
+
+
+docker login -u admin --password-stdin http://135.233.99.177:8082
+
+errors
+tls: unrecognized name - 
+
+
+ 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+To pull image to docker use this command :
+
+For ex : we have pulled busybox image to our remote repo
+
+docker pull 135.233.99.177:8082/training-docker-remote/busybox:glibc
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			Pull and push in local
+
+JFrog@JFrog:~/docker$ docker pull 135.233.99.177:8082/relay-release-docker-local/redis:latest
+Error response from daemon: manifest for 135.233.99.177:8082/relay-release-docker-local/redis:latest not found: manifest unknown: The named manifest is not known to the registry.
+
+
+It wont be possible in local because the image redis is not present in remote regsitry .
+To overcome this we must pull the image to remote registry and then push it..
+
+This is the step to overcome it.
+
+docker tag 91ef0af61f39 135.233.99.177:8082/training-docker-local/alpine:latest - first command
+docker push 135.233.99.177:8082/training-docker-local/alpine:latest - second command 
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+					Workflow of jfrog
+docker login
+docker pull - 
+docker images - lists the images which is stored in particular registry.
+docker tag
+docker push
+
+If we wont find the image , we have to ask for the customer for the registry where that particular image is pulled.
+Ex : redis
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+	JFrog artifactory is a checksum based storage.(It stores the upgradation of the file which already exists and it wont again create the file.)
+
+
+
+The purpose of indexed resources in X-ray systems is to provide a structured, organized way of managing, searching, and comparing X-ray images or data.
+
+
+
+
+
+In the context of JFrog—a company that provides solutions for DevOps, continuous integration, and package management—X-ray policies and watches are used to enhance security, compliance, and operational integrity within the software development lifecycle. Specifically, JFrog Xray is a tool that scans software artifacts for vulnerabilities, license compliance issues, and other risks. It integrates with JFrog Artifactory, the repository manager for storing and distributing binaries, to continuously monitor and protect artifacts .
+
+
+1. X-ray Policies in JFrog
+X-ray Policies in JFrog refer to the rules and configurations that govern how the Xray tool scans the components (such as libraries, dependencies, and Docker images) in your software artifacts. These policies define the actions taken when vulnerabilities, license violations, or other issues are detected in your dependencies or code.
+
+Key Aspects of X-ray Policies:
+Security Policies: Define the severity levels of security vulnerabilities that are acceptable within your artifacts (e.g., low, medium, high, critical).
+License Policies: Ensure that all software dependencies comply with your licensing requirements (e.g., open-source licenses).
+Quality and Compliance Policies: Set thresholds for which versions of components are acceptable, based on testing, security, or performance criteria.
+Automated Actions: Define actions to be taken when vulnerabilities or policy violations are detected, such as blocking a build, sending alerts, or quarantining an artifact.
+
+Scenario Example for X-ray Policy in JFrog:
+Context: A software development team is working on a new application and is using JFrog Artifactory to manage their dependencies, which include several open-source libraries and Docker images. The team has configured JFrog Xray to scan all components for known vulnerabilities and license issues.
+
+X-ray Policy in Action:
+
+The Xray policy is set to block any component with a critical security vulnerability. The security team also configures the policy to alert the developers if any dependencies have licensing conflicts.
+The team pushes a new version of the application, which automatically triggers an X-ray scan of the Docker image and all the libraries included in the build.
+Outcome: The scan identifies a high-severity vulnerability in one of the open-source libraries used in the build. Based on the X-ray policy, the build is automatically blocked, and the development team is alerted to the issue. The policy also flags a license conflict related to a third-party dependency.
+
+Result: The team resolves the vulnerability by updating the library to a patched version and fixes the license issue by replacing the offending dependency with one that is properly licensed. The build is then able to pass the scan and continue to the next stage of deployment.
+
+2. Watches in JFrog
+In JFrog Xray, watches are used to continuously monitor specific artifacts, repositories, or projects for vulnerabilities, compliance violations, or other issues. Watches allow users to track specific components or groups of components based on criteria like severity, package type, or license.
+Context: A security team is responsible for ensuring that all applications in the company's ecosystem are free from high-risk vulnerabilities. They set up a watch in JFrog Xray to monitor all components in the production repository for any critical vulnerabilities or compliance issues.
+
+Watch in Action:
+
+The security team configures a watch to monitor any new artifact or update in the production repository that contains vulnerabilities with a high or critical severity level.
+The watch is set to send alerts to the security team whenever a new issue is detected in these critical components.
+Outcome:
+
+One day, a new version of a popular open-source library used in multiple applications in the production environment is uploaded to Artifactory. The watch identifies that this new version contains a critical security vulnerability that was not present in the previous version.
+The watch immediately triggers an alert, notifying the security team of the vulnerability in the new version of the library.
+Result: The security team investigates the issue, finds that the vulnerability is severe, and determines that the new version of the library should not be used in production. The affected components are quarantined, and the team works with developers to find an alternative version or update the library to mitigate the vulnerability. The watch system ensures that the security team is quickly alerted to new vulnerabilities, allowing for faster response times.
+
+Combining X-ray Policies and Watches in JFrog:
+By integrating both X-ray policies and watches, JFrog enables teams to have both preventative controls and real-time monitoring to ensure the security, compliance, and quality of their software artifacts.
+
+Scenario Example Combining Both:
+Context: A company uses JFrog Artifactory for managing both its development and production artifacts. The company has set up X-ray policies to block any components with high-severity vulnerabilities from entering production. They also have a watch system that monitors any changes in the production repository.
+
+X-ray Policy and Watch in Action:
+
+X-ray Policy: The team has configured an X-ray policy to block any build that contains components with critical security vulnerabilities or license violations.
+Watch System: A watch is set to continuously monitor the production repository for any new or updated artifacts with security issues, licensing problems, or outdated versions.
+Outcome: The system automatically scans all new components and builds. A new build is created and uploaded to the production repository, which includes an outdated library with a high-severity vulnerability. The X-ray policy immediately blocks the build, and the watch system sends a real-time alert to the security and development teams.
+
+Result: The development team quickly fixes the issue by updating the library to a secure version, ensuring that no high-risk components make it to production.
+
+Conclusion:
+X-ray Policies in JFrog allow organizations to define security, compliance, and quality requirements, ensuring that only safe and compliant components are included in builds.
+Watches provide real-time monitoring and alerts for specific artifacts, repositories, or vulnerabilities, helping teams identify and address risks quickly.
+Both of these features work together to ensure that software development pipelines remain secure, compliant, and efficient, preventing potential issues before they reach production.
+
+
+
+
+
+
+
+
+
+In JFrog (specifically in JFrog Artifactory), licenses are managed to ensure compliance with legal and security requirements when using open-source or third-party artifacts. JFrog provides features to help organizations control which types of licenses are allowed or banned when managing their artifacts.
+
+1. Allowed Licenses:
+These are licenses that your organization accepts for use in your projects. Artifacts with these licenses are considered compliant and can be used without restriction. Some common allowed licenses include:
+
+MIT License: A permissive open-source license that allows for modification, distribution, and private use.
+Apache 2.0: Another permissive open-source license that allows for modifications, distributions, and private use with a grant of patent rights.
+BSD 3-Clause License: A permissive license that allows for redistribution and modification.
+GNU Lesser General Public License (LGPL): A copyleft license that allows linking with proprietary software but requires modifications to be open-source.
+Creative Commons (specific versions like CC BY, CC BY-SA): Allowing certain kinds of reuse, often used for documentation or media.
+Organizations can specify a list of allowed licenses in JFrog to automatically approve artifacts with matching licenses.
+
+2. Banned Licenses:
+These are licenses that are not permitted within your organization, either due to legal concerns, security risks, or company policy. Artifacts with these licenses are flagged as non-compliant and are not allowed in the repository. Commonly banned licenses include:
+
+GPL (General Public License): The GNU GPL (especially GPL-3.0) can be problematic in some contexts because it requires that derivative works also be open-source, which might not be compatible with proprietary software.
+AGPL (Affero General Public License): Similar to GPL, but with a stronger requirement that even software accessed over a network must be open-source if modified.
+Commercial Licenses without a valid contract: Some proprietary commercial licenses may be banned if they do not have an appropriate agreement or are not compliant with your company's use policy.
+Non-OSI Approved Licenses: Licenses that are not recognized by the Open Source Initiative (OSI) might be excluded due to the lack of standard compliance.
+Setting Up Allowed and Banned Licenses in JFrog:
+In JFrog Artifactory, you can configure license policies using the following features:
+
+License Compliance: You can define a list of allowed and banned licenses for your artifacts. When a new artifact is uploaded to the repository, JFrog checks the artifact’s license against these policies.
+Xray: JFrog Xray can analyze the dependencies of your artifacts for license compliance, helping identify banned licenses in artifacts, and can notify you when issues are detected.
+Custom Policies: JFrog Artifactory allows you to set up custom policies to restrict or approve artifacts based on their license type.
+Example:
+Allowed Licenses: MIT, Apache-2.0, BSD-3-Clause
+Banned Licenses: GPL-3.0, AGPL-3.0, proprietary licenses without a contract
+How to Manage:
+Create License Policies: Through the JFrog Artifactory or Xray interface, you can create rules about what licenses are allowed or banned for each artifact.
+Audit and Reporting: JFrog provides auditing tools to track artifacts based on their licenses and ensure compliance across your system.
+In summary, allowed and banned licenses in JFrog are defined based on organizational policies regarding legal compliance, open-source rules, and intellectual property. JFrog offers tools for automated checks to help enforce these policies across artifacts in your repository.
+
+
+
+Operational Risk Management: In JFrog Xray, these conditions are used to flag risks related to the use of outdated or unsupported software. They are part of a broader compliance and security strategy to minimize the risk of using vulnerable, outdated, or unsupported components.
+
+
+
+Minimal severity refers to the classification of risks based on their potential impact. In operational risk management, it is important to define the levels of severity of identified risks so that organizations can prioritize risk mitigation efforts and resources appropriately.
+
+Custom conditions in operational risk management refer to tailored criteria or thresholds that organizations define in order to evaluate and manage risks according to their specific operational environment, industry needs, and regulatory requirements.
+
+
+End of Life refers to the point at which a software version, product, or component is no longer supported by the developers or maintainers. Once a version reaches EOL, it no longer receives official updates, bug fixes, or security patches, which makes it increasingly risky to use in production environments.
+
+CVE stands for Common Vulnerabilities and Exposures. It is a standardized identification system for publicly known cybersecurity vulnerabilities
+
+CVSS stands for Common Vulnerability Scoring System. It is a standardized scoring system used to assess the severity of a vulnerability
+
+0.0 - 3.9: Low severity
+4.0 - 6.9: Medium severity
+7.0 - 8.9: High severity
+9.0 - 10.0: Critical severity
+
+
+Scans list:
+
+In JFrog Xray, the "Scans List" refers to a detailed list or overview of all the scans that have been performed on the software artifacts stored in JFrog Artifactory or other connected repositories.
+
+watch violations :
+	
+In JFrog Xray, Watch Violations refer to violations of security, compliance, or other policies that are triggered by Watches monitoring specific artifacts, repositories, or components.
+
+reports :
+
+Reports in JFrog Xray provide detailed, actionable insights into the security, license compliance, and policy violations found in the artifacts stored in Artifactory.
+
+Reports can be customized, exported, and automated, making it easier for teams to track and resolve issues before deploying artifacts to production.
+
+
+Without policies, watches would simply identify issues without enforcing any corrective action, whereas without watches, policies would not have any violations to act upon. Therefore, they work together to provide a complete security and compliance solution.
+
+
+
+		user-->Jfrog
+		pass-->Jfrog@123456		
+
+
+
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
