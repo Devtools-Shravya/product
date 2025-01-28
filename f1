@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Personal Webpage</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <header>
+        <h1>Welcome to My Webpage</h1>
+        <p>This is a simple personal webpage built with HTML, CSS, and JavaScript.</p>
+    </header>
+
+    <section class="about">
+        <h2>About Me</h2>
+        <p>Hi! I'm a web enthusiast learning HTML, CSS, and JavaScript. I love creating new things!</p>
+    </section>
+
+    <button id="greetButton">Click Me for a Greeting</button>
+    <p id="greetingMessage"></p>
+
+    <footer>
+        <p>Contact me at: <a href="mailto:example@example.com">example@example.com</a></p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
