@@ -1,5 +1,5 @@
 SDLC :3 examples each
-
+Done
 
 1.Planning - Jira,Trello,MS project
 2.Defining - Confluence, Clickup ,Track and rally
