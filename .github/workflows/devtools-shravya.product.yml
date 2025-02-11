@@ -1,0 +1,49 @@
+name: AzureCI/Devtools-Shravya.product
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+env:
+  buildConfiguration: Release
+  solution: "**/*.sln"
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - name: checkout
+      uses: actions/checkout@v4.1.0
+#     # This item has no matching transformer
+#     - task: Checkout@2
+#       displayName: Checkout code
+    - uses: actions/setup-dotnet@v4.0.0
+      with:
+        dotnet-version: 6.x
+    - name: Restore dependencies
+      run: dotnet restore ${{ env.solution }}
+    - name: Build solution
+      run: dotnet build ${{ env.solution }} --configuration ${{ env.buildConfiguration }}
+    - name: Run unit tests
+      run: dotnet test ${{ env.solution }} --logger trx --results-directory "${{ runner.temp }}" --configuration ${{ env.buildConfiguration }}
+    - name: Run unit tests
+      uses: NasAmin/trx-parser@v0.5.0
+      if: always()
+      with:
+        TRX_PATH: "${{ runner.temp }}"
+        REPO_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+    - name: Publish build artifacts
+      uses: actions/upload-artifact@v4.1.0
+      with:
+        name: drop
+        path: "${{ runner.temp }}"
+    - name: Deploy to Azure Web App
+      uses: azure/login@v1.6.0
+      with:
+        creds: "${{ secrets.AZURE_CREDENTIALS }}"
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v3.0.0
+      with:
+        app-name: my-app-name
+        package: "${{ runner.temp }}/**/*.zip"
