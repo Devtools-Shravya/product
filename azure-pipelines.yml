@@ -1,0 +1,72 @@
+# This is a basic example of an Azure DevOps pipeline for a .NET application
+
+trigger:
+  branches:
+    include:
+      - main  # Trigger on commits to the main branch
+
+pr:
+  branches:
+    include:
+      - main  # Run on pull requests targeting the main branch
+
+pool:
+  vmImage: 'windows-latest'  # Using a Microsoft-hosted agent with the latest Windows image
+
+variables:
+  solution: '**/*.sln'  # Wildcard pattern to find the solution file
+  buildConfiguration: 'Release'  # Build configuration for the project
+
+steps:
+
+# 1. Checkout the code from the repository
+- task: Checkout@2
+  displayName: 'Checkout code'
+
+# 2. Install .NET SDK
+- task: UseDotNet@2
+  inputs:
+    packageType: 'sdk'
+    version: '6.x'
+    installationPath: $(Agent.ToolsDirectory)/dotnet
+
+# 3. Restore dependencies (e.g., NuGet packages)
+- task: DotNetCoreCLI@2
+  displayName: 'Restore dependencies'
+  inputs:
+    command: 'restore'
+    projects: $(solution)
+
+# 4. Build the solution (build project)
+- task: DotNetCoreCLI@2
+  displayName: 'Build solution'
+  inputs:
+    command: 'build'
+    projects: $(solution)
+    arguments: '--configuration $(buildConfiguration)'
+
+# 5. Run unit tests
+- task: DotNetCoreCLI@2
+  displayName: 'Run unit tests'
+  inputs:
+    command: 'test'
+    projects: $(solution)
+    arguments: '--configuration $(buildConfiguration)'
+
+# 6. Publish build artifacts (for example, an output directory)
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish build artifacts'
+  inputs:
+    pathToPublish: '$(Build.ArtifactStagingDirectory)'
+    artifactName: 'drop'
+    publishLocation: 'Container'
+
+# 7. (Optional) Deploy to a staging environment or test environment
+- task: AzureWebApp@1
+  displayName: 'Deploy to Azure Web App'
+  inputs:
+    azureSubscription: 'MyAzureSubscription'  # Azure subscription connected to DevOps
+    appName: 'my-app-name'  # Azure Web App name
+    package: '$(Build.ArtifactStagingDirectory)/**/*.zip'  # Path to the deployment package
+    deploymentMethod: 'auto'
+
